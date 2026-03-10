@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Result List</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<h2>Student Result List</h2>
+
+<table border="1">
+<tr>
+<th>Student Name</th>
+<th>Subject</th>
+<th>Marks</th>
+</tr>
+
+{% for r in results %}
+<tr>
+<td>{{ r.student.name }}</td>
+<td>{{ r.subject }}</td>
+<td>{{ r.marks }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<br><br>
+
+<h2>Marks Chart</h2>
+
+<canvas id="marksChart" width="600" height="300"></canvas>
+
+
+
+<script>
+
+var subjects = JSON.parse(document.getElementById('subjects-data').textContent);
+var marks = JSON.parse(document.getElementById('marks-data').textContent);
+
+var ctx = document.getElementById("marksChart").getContext("2d");
+
+new Chart(ctx,{
+    type:"bar",
+    data:{
+        labels:subjects,
+        datasets:[{
+            label:"Marks",
+            data:marks,
+            backgroundColor:"blue"
+        }]
+    },
+    options:{
+        scales:{
+            y:{
+                beginAtZero:true
+            }
+        }
+    }
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Student Result</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-4">
+
+<h2 class="text-center mb-4">Student Result System</h2>
+
+<form method="GET">
+<div class="mb-3">
+<label>Enter Roll Number</label>
+<input type="number" name="roll_no" class="form-control" required>
+</div>
+
+<button type="submit" class="btn btn-primary">
+Search Result
+</button>
+
+</form>
+
+</div>
+
+<br>
+
+{% if result %}
+
+<div class="card shadow-lg border-0 mt-4">
+
+<div class="card-header bg-primary text-white text-center">
+<h3>Student Result</h3>
+</div>
+
+<div class="card-body">
+
+<div class="row align-items-center">
+
+<div class="col-md-3 text-center">
+
+{% if student.photo %}
+<img src="{{ student.photo.url }}" width="120" height="120" class="rounded-circle border">
+{% endif %}
+
+</div>
+
+<div class="col-md-9">
+
+<h5><b>Name:</b> {{ student.name }}</h5>
+<h5><b>Roll No:</b> {{ student.roll_no }}</h5>
+
+</div>
+
+</div>
+
+<hr>
+
+<table class="table table-striped table-bordered text-center">
+
+<thead class="table-dark">
+<tr>
+<th>Subject</th>
+<th>Marks</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for r in result %}
+
+<tr>
+<td>{{ r.subject }}</td>
+<td>{{ r.marks }}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<h4 class="text-center mt-4">Marks Chart</h4>
+
+<canvas id="marksChart" height="120"></canvas>
+
+{{ subjects|json_script:"subjects-data" }}
+{{ marks|json_script:"marks-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+var subjects = JSON.parse(document.getElementById("subjects-data").textContent);
+var marks = JSON.parse(document.getElementById("marks-data").textContent);
+
+var ctx = document.getElementById("marksChart").getContext("2d");
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:subjects,
+datasets:[{
+label:"Marks",
+data:marks,
+backgroundColor:["blue","green","orange","purple"]
+}]
+},
+options:{
+scales:{
+y:{
+beginAtZero:true
+}
+}
+}
+});
+
+</script>
+
+<div class="row text-center mt-4">
+
+<div class="col-md-4">
+<div class="card bg-light p-3">
+<h6>Total Marks</h6>
+<h4>{{ total }}</h4>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card bg-light p-3">
+<h6>Percentage</h6>
+<h4>{{ percentage }}%</h4>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card bg-light p-3">
+
+<h6>Status</h6>
+
+{% if percentage >= 40 %}
+<h4 class="text-success">PASS</h4>
+{% else %}
+<h4 class="text-danger">FAIL</h4>
+{% endif %}
+
+</div>
+</div>
+
+</div>
+
+<div class="text-center mt-4">
+
+<h4>Grade:
+<span class="badge bg-success">{{ grade }}</span>
+</h4>
+
+</div>
+
+<hr>
+
+<div class="text-center mt-4">
+
+<a href="/download/{{ student.roll_no }}/" class="btn btn-success me-2">
+Download PDF
+</a>
+
+<button onclick="window.print()" class="btn btn-primary">
+Print Result
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>
